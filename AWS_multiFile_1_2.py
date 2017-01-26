@@ -4,6 +4,8 @@ Created on Mon May 23 19:13:57 2016
 
 @author: kezhili
 """
+
+
 #from keras.models import Model
 from keras.models import Sequential  
 from keras.layers.core import Dense, Activation, Dropout  
@@ -12,8 +14,6 @@ import pandas as pd
 import time
 import h5py
 import numpy as np
-#from random import random
-#import matplotlib.pyplot as plt
 import os
 
 model = Sequential()  
