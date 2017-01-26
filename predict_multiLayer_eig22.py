@@ -18,13 +18,29 @@ from keras.layers.recurrent import LSTM
 #model.add(Activation("linear"))  
 #model.compile(loss="mean_squared_error", optimizer="rmsprop")  
 
-model = Sequential()  
-model.add(LSTM(7, 500, return_sequences=True))  
-model.add(LSTM(500, 500, return_sequences=False))  
-model.add(Dropout(0.2))  
-model.add(Dense(500, 7))  
+#model = Sequential()  
+#model.add(LSTM(7, 500, return_sequences=True))  
+#model.add(LSTM(500, 500, return_sequences=False))  
+#model.add(Dropout(0.2))  
+#model.add(Dense(500, 7))  
+#model.add(Activation("linear"))  
+#model.compile(loss="mean_squared_error", optimizer="rmsprop")  
+
+# as the first layer in a Sequential model
+
+model = Sequential()
+model.add(LSTM(200, input_dim=7,  return_sequences=True))#input_length=50,
+model.add(LSTM(output_dim=200, input_dim=200,return_sequences=True))
+model.add(Dropout(0.2))
+model.add(LSTM(output_dim=200, input_dim=200,return_sequences=True))
+model.add(Dropout(0.2))
+model.add(LSTM(output_dim=200, input_dim=200,return_sequences=False))
+model.add(Dropout(0.2))
+model.add(Dense(7,input_dim=200))  
 model.add(Activation("linear"))  
 model.compile(loss="mean_squared_error", optimizer="rmsprop")  
+
+
 
 import pandas as pd  
 import time
@@ -83,8 +99,8 @@ pd.DataFrame(predicted[:50]).plot()
 pd.DataFrame(y_test[:50]).plot()  
 
 # save to csv
-np.savetxt("./data/eig_MulLayer_predicted_full22.csv", predicted, delimiter=",")
-np.savetxt("./data/eig_MulLayer_y_test_full22.csv", y_test, delimiter=",")
+np.savetxt("./data/eig_MulLayer_predicted_full22_temp1.csv", predicted, delimiter=",")
+np.savetxt("./data/eig_MulLayer_y_test_full22_temp1.csv", y_test, delimiter=",")
 
 
 
@@ -119,8 +135,8 @@ for ii in range(400):
     x_prev = np.copy(x_now[0,])
                 
 # save to csv
-np.savetxt("./data/eig_MulLayer_generated_full22.csv", eig_generated1, delimiter=",")     
+np.savetxt("./data/eig_MulLayer_generated_full22_temp1.csv", eig_generated1, delimiter=",")     
 
 print time.time() - t0         
 # save model weights
-model.save_weights('./data/eig_MulLayer_generated_full22.h5')      
+model.save_weights('./data/eig_MulLayer_generated_full22_temp1.h5')      
