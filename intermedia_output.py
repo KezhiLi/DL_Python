@@ -5,8 +5,9 @@ Created on Tue Jan 17 17:38:35 2017
 @author: kezhili
 """
 from keras.models import Sequential  
-from keras.layers.core import Dense, Activation, Dropout  
+from keras.layers.core import Dense, Activation, Dropout
 from keras.layers.recurrent import LSTM
+import theano
 import pandas as pd  
 import time
 import h5py
@@ -18,28 +19,34 @@ import sys
 import pandas as pd  
 import time
 
+model = Sequential()  
+L0 = LSTM(7, 260, return_sequences=True)
+model.add(L0)
+L1 = LSTM(260, 260, return_sequences=True)
+model.add(L1)  
+model.add(Dropout(0.2))  
+L2 = LSTM(260, 260, return_sequences=True)
+model.add(L2)  
+model.add(Dropout(0.2))  
+L3 = LSTM(260, 260, return_sequences=False)
+model.add(L3)  
+model.add(Dropout(0.2))   
+model.add(Dense(260, 7))
+A_out = Activation("linear")
+model.add(A_out)  
+model.compile(loss="mean_squared_error", optimizer="rmsprop")  
 #model = Sequential()
-#model.add(LSTM(260, input_dim=7,  return_sequences=True))#input_length=50,
-#model.add(LSTM(output_dim=260, input_dim=260,return_sequences=True))
+#model.add(LSTM(input_dim=7,  output_dim=260, return_sequences=True))#input_length=50,
+#model.add(LSTM(input_dim=260,output_dim=260, return_sequences=True))
 #model.add(Dropout(0.2))
-#model.add(LSTM(output_dim=260, input_dim=260,return_sequences=True))
+#model.add(LSTM(input_dim=260,output_dim=260, return_sequences=True))
 #model.add(Dropout(0.2))
-#model.add(LSTM(output_dim=260, input_dim=261,return_sequences=False))
+#model.add(LSTM(input_dim=260,output_dim=260, return_sequences=False))
 #model.add(Dropout(0.2))
-#model.add(Dense(7,input_dim=261))  
+#model.add(Dense(input_dim=260, output_dim=7))  
 #model.add(Activation("linear"))  
 #model.compile(loss="mean_squared_error", optimizer="rmsprop")  
-model = Sequential()
-model.add(LSTM(input_dim=7,  output_dim=260, return_sequences=True))#input_length=50,
-model.add(LSTM(input_dim=260,output_dim=260, return_sequences=True))
-model.add(Dropout(0.2))
-model.add(LSTM(input_dim=260,output_dim=260, return_sequences=True))
-model.add(Dropout(0.2))
-model.add(LSTM(input_dim=260,output_dim=260, return_sequences=False))
-model.add(Dropout(0.2))
-model.add(Dense(input_dim=260, output_dim=7))  
-model.add(Activation("linear"))  
-model.compile(loss="mean_squared_error", optimizer="rmsprop")  
+
 
 
 #from random import random
@@ -109,11 +116,17 @@ rmse = np.sqrt(((predicted - y_test) ** 2).mean(axis=0))
 #get_1st_layer_output = K.function([model.layers[0].input],[model.layers[1].output])
 #first_layer_output = get_1st_layer_output([X_test])[0]
 
+model_L0_func = theano.function([model.layers[0].input], model.layers[0].get_output(train=False), allow_input_downcast=True)
+res_L0 = model_L0_func(X_test)
 
+#model_L_func = theano.function([model.layers[0].input], [model.layers[0].get_output(train=False),model.layers[0].get_output(train=False)] allow_input_downcast=True)
+#res_L = model_L_func(X_test)
 
 #import theano
 #get_activations = theano.function([model.layers[0].input], model.layers[1].output(train=False), allow_input_downcast=True)
 #activations = get_activations(X_batch) 
+
+#first_layer_output = keras.layer.get_output_at(node_index)
 
 
 # and maybe plot it
@@ -121,8 +134,8 @@ pd.DataFrame(predicted[:50]).plot()
 pd.DataFrame(y_test[:50]).plot()  
 
 # save to csv
-np.savetxt("./data/N2_predicted_0.csv", predicted, delimiter=",")
-np.savetxt("./data/N2_y_test_0.csv", y_test, delimiter=",")
+np.savetxt("./data/temp_predicted_0.csv", predicted, delimiter=",")
+np.savetxt("./data/temp_y_test_0.csv", y_test, delimiter=",")
         
 sentence = X_test[0,:,:]
 eig_generated1 = sentence[-1,]
@@ -145,6 +158,6 @@ for ii in range(400):
     x_prev = np.copy(x_now[0,])
                 
 # save to csv
-np.savetxt("./data/N2_generated_0.csv", eig_generated1, delimiter=",")     
+np.savetxt("./data/temp_generated_0.csv", eig_generated1, delimiter=",")     
 
 print time.time() - t0         

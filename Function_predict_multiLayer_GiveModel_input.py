@@ -17,8 +17,8 @@ import random
 import os
 import sys
 
-#model_name = 'C:/Users/kezhili/Documents/Python Scripts/data/FromAWS/test_res_1110_2016/multiFile_weights_7-200-200-7_600ep.h5'
-model_name = sys.argv[1]
+model_name = 'C:/Users/kezhili/Documents/Python Scripts/data/FromAWS/N2/multiFile_N2_7-260-260-260-260-7_600ep.h5'
+#model_name = sys.argv[1]
 root = 'Z:/DLWeights/eig_catagory_Straits/N2/'
 #root = sys.argv[2]
 

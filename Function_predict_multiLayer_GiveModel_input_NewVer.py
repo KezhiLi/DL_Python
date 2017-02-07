@@ -18,7 +18,8 @@ import os
 import sys
 
 #model_name = 'C:/Users/kezhili/Documents/Python Scripts/data/FromAWS/test_res_1110_2016/multiFile_weights_7-200-200-7_600ep.h5'
-model_name = sys.argv[1]
+#model_name = sys.argv[1]
+model_name = 'C:/Users/kezhili/Documents/Python Scripts/data/FromAWS/N2/multiFile_N2_newAWS_7-260-260-260-260-7_600ep.h5'
 root = 'Z:/DLWeights/eig_catagory_Straits/N2/'
 #root = sys.argv[2]
 
@@ -77,6 +78,8 @@ file_no = 0
 
 model.load_weights(model_name)  
 
+num_ter =3000
+
 for path, subdirs, files in os.walk(root):
     for name in files:
         if name.endswith("eig.hdf5"):
@@ -117,9 +120,9 @@ for path, subdirs, files in os.walk(root):
                         mag = 1
                         name_suf =  "_generated_Lnoise.csv"            
             
-                for ii in range(9000):
+                for ii in range(num_ter):
                     if ii % 50 == 1:
-                        print "loop =  %d / 9000 ." % ii
+                        print "loop =  %d / 3000 ." % ii 
                     
                     x_now = np.zeros((1,sentence.shape[0],sentence.shape[1]))
                     #x_now[0:-2,] = x_prev[1:,]
